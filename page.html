@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>マトリックス風ページ</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // フルスクリーンにする
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // 文字セット（0と1のみ）
+    const binary = '01';
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+
+    // 各列のY座標を初期化
+    const drops = Array.from({length: columns}, () => Math.random() * -20);
+
+    function drawMatrix() {
+      // 背景を少し透明で塗りつぶして残像効果
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 文字のスタイル
+      ctx.fillStyle = '#00FF00'; // 蛍光緑
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = binary[Math.floor(Math.random() * binary.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 50);
+
+    // ウィンドウサイズ変更時に対応
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
