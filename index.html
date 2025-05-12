@@ -10,39 +10,93 @@
       background: black;
       overflow: hidden;
       height: 100%;
+      font-family: sans-serif;
     }
 
     canvas {
       display: block;
+      z-index: 0;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #f00;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      z-index: 1;
+      box-shadow: 0 0 15px red;
+    }
+
+    .overlay h1 {
+      font-size: 48px;
+      color: #f00;
+      margin: 0 0 10px;
+    }
+
+    .overlay p {
+      font-size: 24px;
+      color: #333;
+      margin: 0 0 20px;
+    }
+
+    .close-btn {
+      font-size: 24px;
+      background: transparent;
+      border: none;
+      color: #f00;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 15px;
+    }
+
+    #toggleBtn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 2;
+      padding: 10px 20px;
+      font-size: 18px;
+      background: #f00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
   <canvas id="matrixCanvas"></canvas>
 
+  <div id="warning" class="overlay">
+    <button class="close-btn" onclick="hideWarning()">×</button>
+    <h1>⚠️</h1>
+    <p>情報提供ありがとう</p>
+  </div>
+
+  <button id="toggleBtn" onclick="showWarning()">再表示</button>
+
   <script>
     const canvas = document.getElementById('matrixCanvas');
     const ctx = canvas.getContext('2d');
-
-    // フルスクリーンにする
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // 文字セット（0と1のみ）
     const binary = '01';
     const fontSize = 16;
     const columns = canvas.width / fontSize;
-
-    // 各列のY座標を初期化
     const drops = Array.from({length: columns}, () => Math.random() * -20);
 
     function drawMatrix() {
-      // 背景を少し透明で塗りつぶして残像効果
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // 文字のスタイル
-      ctx.fillStyle = '#00FF00'; // 蛍光緑
+      ctx.fillStyle = '#00FF00';
       ctx.font = fontSize + 'px monospace';
 
       for (let i = 0; i < drops.length; i++) {
@@ -62,11 +116,19 @@
 
     setInterval(drawMatrix, 50);
 
-    // ウィンドウサイズ変更時に対応
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
+
+    // 表示・非表示切り替え
+    function hideWarning() {
+      document.getElementById('warning').style.display = 'none';
+    }
+
+    function showWarning() {
+      document.getElementById('warning').style.display = 'block';
+    }
   </script>
 </body>
 </html>
